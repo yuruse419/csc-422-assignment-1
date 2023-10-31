@@ -14,14 +14,11 @@ public class Main {
 
     while(running) {
       // prompt user for action
-      System.out.println("Enter the number for the corresponding action:");
-      System.out.println("\t0. Quit \n\t1. Display Pets\n\t2. Insert Pet\n\t3. Search Pets");
+      System.out.println("\nEnter the number for the corresponding action:");
+      System.out.println("\t0. Quit \n\t1. Display Pets\n\t2. Insert Pet\n\t3. Search Pets\n\t4. Edit Pet\n\t5. Remove Pet");
 
       // initialize a String for user input
       String userInput = inputObj.nextLine();
-
-      // blank line
-      System.out.println();
 
       // quit
       if(userInput.equals("0")) {
@@ -35,7 +32,7 @@ public class Main {
       else if(userInput.equals("2")) {
         // until user enters a string that contains "done"
         while(userInput.indexOf("done") == -1) {
-          System.out.println("Enter new pet info: <name> <age> done");
+          System.out.println("\nEnter new pet info: <name> <age> done");
 
           userInput = inputObj.nextLine().toLowerCase();
         }
@@ -53,7 +50,7 @@ public class Main {
       }
       // else search by pet name or age
       else if(userInput.equals("3")) {
-        System.out.println("How do you wish to search?");
+        System.out.println("\nHow do you wish to search?");
 
         // until user chooses a valid action
         while(!userInput.equals("1") && !userInput.equals("2")) {
@@ -68,18 +65,12 @@ public class Main {
         if(userInput.equals("1")) {
           String searchName = inputObj.nextLine().toLowerCase();
 
-          // blank line
-          System.out.println();
-
           System.out.println(displayPets(pets, searchName));
         }
         // else try search by age
         else if(userInput.equals("2")) {
           try {
             int searchAge = Integer.parseInt(inputObj.nextLine());
-
-            // blank line
-            System.out.println();
 
             System.out.println(displayPets(pets, searchAge));
           }
@@ -88,9 +79,54 @@ public class Main {
           }
         }
       }
+      // else update pet
+      else if(userInput.equals("4")) {
+        // display pets for user reference
+        System.out.println(displayPets(pets));
 
-      // blank line
-      System.out.println();
+        System.out.println("\nSelect a pet ID from the above table:");
+
+        try {
+          int id = Integer.parseInt(inputObj.nextLine());
+
+          System.out.println("Enter new pet info: <name> <age> done:");
+
+          userInput = inputObj.nextLine();
+
+          // parse input
+          String petName = userInput.substring(0, userInput.indexOf(" "));
+          int petAge = Integer.parseInt(userInput.substring(petName.length() + 1, userInput.indexOf("done") - 1));
+
+          // set attributes of pet at diven index
+          pets.get(id).setName(petName);
+          pets.get(id).setAge(petAge);
+        }
+        catch(NumberFormatException exception) {
+          System.out.println("Invalid ID or info");
+        }
+        catch(IndexOutOfBoundsException exception) {
+          System.out.println("Invalid ID");
+        }
+      }
+      // else remove pet
+      else if(userInput.equals("5")) {
+        // display pets for user reference
+        System.out.println(displayPets(pets));
+
+        System.out.println("Select a pet ID from the above table:");
+
+        try {
+          int id = Integer.parseInt(inputObj.nextLine());
+
+          pets.remove(id);
+        }
+        catch(NumberFormatException exception) {
+          System.out.println("Invalid ID");
+        }
+        catch(IndexOutOfBoundsException exception) {
+          System.out.println("Invalid ID");
+        }
+      }
     }
 
     // close the Scanner object
@@ -99,7 +135,7 @@ public class Main {
 
   // generate table of pets
   public static String displayPets(ArrayList<Pet> pets) {
-    String table = "ID\tName\tAge";
+    String table = "\nID\tName\tAge";
     table += "\n--\t----\t---";
 
     for(int i = 0; i < pets.size(); i++) {
@@ -107,14 +143,14 @@ public class Main {
     }
 
     table += "\n--\t----\t---";
-    table += "\nEntries: " + pets.size();
+    table += "\nEntries: " + pets.size() + "\n";
 
     return table;
   }
 
   // override displayPets for name searching
   public static String displayPets(ArrayList<Pet> pets, String filter) {
-    String table = "ID\tName\tAge";
+    String table = "\nID\tName\tAge";
     table += "\n--\t----\t---";
 
     int entries = 0;
@@ -128,14 +164,14 @@ public class Main {
     }
 
     table += "\n--\t----\t---";
-    table += "\nEntries: " + entries;
+    table += "\nEntries: " + entries + "\n";
 
     return table;
   }
 
   // override displayPets for age searching
   public static String displayPets(ArrayList<Pet> pets, int filter) {
-    String table = "ID\tName\tAge";
+    String table = "\nID\tName\tAge";
     table += "\n--\t----\t---";
 
     int entries = 0;
@@ -149,7 +185,7 @@ public class Main {
     }
 
     table += "\n--\t----\t---";
-    table += "\nEntries: " + entries;
+    table += "\nEntries: " + entries + "\n";
 
     return table;
   }
