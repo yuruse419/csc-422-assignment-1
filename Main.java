@@ -30,50 +30,71 @@ public class Main {
       }
       // else insert pet
       else if(userInput.equals("2")) {
-        // until user enters a string that contains "done"
-        while(userInput.indexOf("done") == -1) {
-          System.out.println("\nEnter new pet info: <name> <age> done");
+        // prompt for pet info or termination
+        System.out.println("\nEnter new pet info or type \"done\" to finish. \n\tFormat: <name> <age>");
 
+        // loop for pet-info input
+        while(true) {
+          // store input
           userInput = inputObj.nextLine().toLowerCase();
-        }
 
-        // try to parse input and add to pets
-        try {
-          String petName = userInput.substring(0, userInput.indexOf(" "));
-          int petAge = Integer.parseInt(userInput.substring(petName.length() + 1, userInput.indexOf("done") - 1));
+          // if input equals "done," break loop
+          if(userInput.equals("done")) {
+            break;
+          }
 
-          pets.add(new Pet(petName, petAge));
-        }
-        catch(NumberFormatException exception) {
-          System.out.println("Invalid age");
+          try {
+            // parse input
+            String petName = userInput.substring(0, userInput.indexOf(" "));
+            int petAge = Integer.parseInt(userInput.substring(petName.length() + 1));
+  
+            // add to pets ArrayList
+            pets.add(new Pet(petName, petAge));
+
+            // output confirmation
+            System.out.println("Pet added.");
+          }
+          // catch for invalid age
+          catch(NumberFormatException exception) {
+            System.out.println("Invalid age");
+          }
         }
       }
       // else search by pet name or age
       else if(userInput.equals("3")) {
+        // prompt for search by name or by age
         System.out.println("\nHow do you wish to search?");
 
         // until user chooses a valid action
         while(!userInput.equals("1") && !userInput.equals("2")) {
+          // prompt for selection
           System.out.println("\t1. By Name\n\t2. By Age");
 
+          // store user selection
           userInput = inputObj.nextLine();
         }
 
+        // prompt for search parameter
         System.out.println("Enter search parameter:");
 
         // search by name
         if(userInput.equals("1")) {
+          // store search parameter
           String searchName = inputObj.nextLine().toLowerCase();
 
+          // display matching pets
           System.out.println(displayPets(pets, searchName));
         }
         // else try search by age
         else if(userInput.equals("2")) {
           try {
+            // try to store search parameter
             int searchAge = Integer.parseInt(inputObj.nextLine());
 
+            // display matching pets
             System.out.println(displayPets(pets, searchAge));
           }
+          // catch for invalid age
           catch(NumberFormatException exception) {
             System.out.println("Invalid age");
           }
@@ -84,26 +105,30 @@ public class Main {
         // display pets for user reference
         System.out.println(displayPets(pets));
 
+        // prompt for pet ID
         System.out.println("\nSelect a pet ID from the above table:");
 
         try {
+          // try to parse pet ID from input
           int id = Integer.parseInt(inputObj.nextLine());
 
-          System.out.println("Enter new pet info: <name> <age> done:");
-
+          // prompt for and store new pet info
+          System.out.println("Enter new pet info. \n\tFormat: <name> <age>");
           userInput = inputObj.nextLine();
 
-          // parse input
+          // parse and store input
           String petName = userInput.substring(0, userInput.indexOf(" "));
-          int petAge = Integer.parseInt(userInput.substring(petName.length() + 1, userInput.indexOf("done") - 1));
+          int petAge = Integer.parseInt(userInput.substring(petName.length() + 1));
 
-          // set attributes of pet at diven index
+          // set attributes of pet at given index
           pets.get(id).setName(petName);
           pets.get(id).setAge(petAge);
         }
+        // catch for invalid ID or age
         catch(NumberFormatException exception) {
-          System.out.println("Invalid ID or info");
+          System.out.println("Invalid ID or age");
         }
+        // additional catch for invalid ID
         catch(IndexOutOfBoundsException exception) {
           System.out.println("Invalid ID");
         }
