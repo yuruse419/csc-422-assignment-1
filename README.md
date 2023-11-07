@@ -24,3 +24,10 @@ Shows a table of all pets.
 1. Show a table of all pets. 
 2. Allow the user to select a pet ID (array index). 
 3. Remove selected pet.
+
+# Stage 4
+
+## Load Pets from and Save Pets to File
+1. On start, populate ArrayList with saved pets. 
+2. On pet insertion, add pet to file.
+3. On pet deletion, remove pet from file. 

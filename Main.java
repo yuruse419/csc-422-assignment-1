@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Main {
@@ -6,8 +8,65 @@ public class Main {
     // instantiate a Scanner object for user input
     Scanner inputObj = new Scanner(System.in);
 
-    // initialize Pets ArrayList
+    // create a File object for the pets file
+    File petsFile = new File("stored_pets.txt");
+    
+    // initialize empty Pets ArrayList
     ArrayList<Pet> pets = new ArrayList<Pet>();
+
+    try {
+      // create a Scanner object for the pets file
+      Scanner storedPets = new Scanner(petsFile);
+
+      // while a next pet entry exists
+      while(storedPets.hasNextLine()) {
+        // if five (5) pet entries have already been added
+        if(pets.size() >= 5) {
+          // notify of capacity reached
+          System.out.println("Pet capacity reached.");
+
+          // terminate pet insertions
+          break;
+        }
+
+        // store the current pet entry and advance the pointer to the next pet entry
+        String petEntry = storedPets.nextLine();
+
+        try {
+          // try to store the index of the name–age delimiter
+          int delimiterIndex = petEntry.indexOf(" ");
+  
+          // try to parse pet name and age
+          String petName = petEntry.substring(0, delimiterIndex);
+          int petAge = Integer.parseInt(petEntry.substring(delimiterIndex + 1));
+  
+          // if age between 0 and 21, exclusively
+          if(petAge > 0 && petAge < 21) {
+            // add pet to pets ArrayList
+            pets.add(new Pet(petName, petAge));
+          }
+          // else if age out of bounds
+          else {
+            System.out.println("Invalid entry skipped (age out of bounds)...");
+          }
+        }
+        // catch for invalid age
+        catch(NumberFormatException exception) {
+          System.out.println("Invalid entry skipped (non-numerical age)...");
+        }
+        // catch for absence of delimiter (i.e., " ")
+        catch(IndexOutOfBoundsException exception) {
+          System.out.println("Invalid entry skipped (no delimiter)...");
+        }
+      }
+
+      // close the pets file
+      storedPets.close();
+    }
+    // catch for no pets file
+    catch(FileNotFoundException exception) {
+      System.out.println("No file to load from. Continuing...");
+    }
 
     // boolean for keeping the system running
     boolean running = true;
