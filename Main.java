@@ -1,15 +1,15 @@
 import java.util.Scanner;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class Main {
-  public static void main(String[] args) throws FileNotFoundException, IOException {
+  public static void main(String[] args) throws IOException {
     // instantiate a Scanner object for user input
     Scanner inputObj = new Scanner(System.in);
 
@@ -26,10 +26,10 @@ public class Main {
     ArrayList<Pet> pets = new ArrayList<Pet>();
 
     // create Iterator for the pets file
-    Iterator<String> petsDataIterator = Files.readAllLines(petsFilePath).listIterator();
+    ListIterator<String> fileIterator = Files.readAllLines(petsFilePath).listIterator();
 
     // while a next pet entry exists
-    while(petsDataIterator.hasNext()) {
+    while(fileIterator.hasNext()) {
       // if five (5) pet entries have already been added
       if(pets.size() >= 5) {
         // notify of capacity reached
@@ -40,7 +40,7 @@ public class Main {
       }
 
       // store the next pet entry and advance the pointer
-      String petEntry = petsDataIterator.next();
+      String petEntry = fileIterator.next();
 
       try {
         // try to store the index of the name–age delimiter
@@ -214,18 +214,55 @@ public class Main {
         // display pets for user reference
         System.out.println(displayPets(pets));
 
+        // prompt user for ID selection
         System.out.println("Select a pet ID from the above table:");
 
         try {
+          // try to store the pet ID
           int id = Integer.parseInt(inputObj.nextLine());
 
-          pets.remove(id);
+          // create a List of all pets in pets file
+          List<String> fileData = Files.readAllLines(petsFilePath);
+          
+          // create a fresh iterator for this List
+          fileIterator = fileData.listIterator();
+
+          // variable to track the line number during iteration
+          int fileLineNumber = 0;
+          
+          // String of the pet to remove ("name age")
+          String petToRemove = pets.get(id).getName() + " " + pets.get(id).getAge();
+
+          // iterate through the file lines
+          while(fileIterator.hasNext()) {
+            // if pet in current line of the file matches the pet to remove
+            if(fileData.get(fileLineNumber).equals(petToRemove)) {
+              // remove the pet from the pets ArrayList
+              pets.remove(id);
+
+              // remove the pet from the List object
+              fileData.remove(fileLineNumber);
+
+              // overwrite the pets file with the contents of the List object
+              Files.write(petsFilePath, fileData);
+
+              // output confirmation of removal
+              System.out.println("\nPet removed.");
+
+              // terminate the loop
+              break;
+            }
+
+            // increment the line number and the iterator
+            fileLineNumber++;
+            fileIterator.next();
+          }
         }
         catch(NumberFormatException exception) {
-          System.out.println("Invalid ID");
+          System.out.println("\nInvalid ID (non-numerical)");
         }
         catch(IndexOutOfBoundsException exception) {
-          System.out.println("Invalid ID");
+          System.out.println("\nInvalid ID (non-existent)");
         }
       }
     }

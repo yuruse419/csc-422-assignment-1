@@ -31,3 +31,4 @@ Shows a table of all pets.
 1. On start, populate ArrayList with saved pets. 
 2. On pet insertion, add pet to file.
 3. On pet deletion, remove pet from file. 
+4. On pet update, update pet in file. 
