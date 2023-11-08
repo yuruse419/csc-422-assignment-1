@@ -196,9 +196,43 @@ public class Main {
           String petName = userInput.substring(0, userInput.indexOf(" "));
           int petAge = Integer.parseInt(userInput.substring(petName.length() + 1));
 
-          // set attributes of pet at given index
-          pets.get(id).setName(petName);
-          pets.get(id).setAge(petAge);
+          // create a List of all pets in the pets file
+          List<String> fileData = Files.readAllLines(petsFilePath);
+          
+          // create a fresh iterator for this List
+          fileIterator = fileData.listIterator();
+
+          // variable to track the line number during iteration
+          int fileLineNumber = 0;
+          
+          // String of the pet to edit ("name age")
+          String petToEdit = pets.get(id).getName() + " " + pets.get(id).getAge();
+          
+          // iterate through the file lines
+          while(fileIterator.hasNext()) {
+            // if pet in current line of the file matches the pet to remove
+            if(fileData.get(fileLineNumber).equals(petToEdit)) {
+              // set the attributes of the pet at given index in the pets ArrayList
+              pets.get(id).setName(petName);
+              pets.get(id).setAge(petAge);
+
+              // remove the pet from the List object
+              fileData.set(fileLineNumber, petName + " " + petAge);
+
+              // overwrite the pets file with the contents of the List object
+              Files.write(petsFilePath, fileData);
+
+              // output confirmation of removal
+              System.out.println("\nPet edited.");
+
+              // terminate the loop
+              break;
+            }
+
+            // increment the line number and the iterator
+            fileLineNumber++;
+            fileIterator.next();
+          }
         }
         // catch for invalid ID or age
         catch(NumberFormatException exception) {
@@ -221,7 +255,7 @@ public class Main {
           // try to store the pet ID
           int id = Integer.parseInt(inputObj.nextLine());
 
-          // create a List of all pets in pets file
+          // create a List of all pets in the pets file
           List<String> fileData = Files.readAllLines(petsFilePath);
           
           // create a fresh iterator for this List
