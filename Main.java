@@ -46,18 +46,24 @@ public class Main {
         // try to store the index of the name–age delimiter
         int delimiterIndex = petEntry.indexOf(" ");
 
-        // try to parse pet name and age
+        // parse name
         String petName = petEntry.substring(0, delimiterIndex);
+
+        // try to parse age
         int petAge = Integer.parseInt(petEntry.substring(delimiterIndex + 1));
   
-        // if age between 0 and 21, exclusively
-        if(petAge > 0 && petAge < 21) {
-          // add pet to pets ArrayList
-          pets.add(new Pet(petName, petAge));
-        }
-        // else if age out of bounds
-        else {
+        // if age not between 1 and 20
+        if(petAge < 1 || petAge > 20) {
           System.out.println("Invalid entry skipped (age out of bounds)...");
+        }
+        // else if name missing
+        else if(petName.length() == 0) {
+          System.out.println("Invalid entry skipped (invalid name)...");
+        }
+        // else
+        else {
+          // add pet to pets ArrayList
+          pets.add(new Pet(petName, petAge));  
         }
       }
       // catch for invalid age
@@ -109,9 +115,30 @@ public class Main {
             // try to store the index of the name–age delimiter
             int delimiterIndex = userInput.indexOf(" ");
 
-            // try to parse input
+            if(delimiterIndex == -1) {
+              System.out.println("Invalid format.");
+
+              continue;
+            }
+
+            // parse name
             String petName = userInput.substring(0, delimiterIndex);
+
+            if(petName.length() == 0) {
+              System.out.println("Invalid name");
+
+              continue;
+            }
+
+            // try to parse age
             int petAge = Integer.parseInt(userInput.substring(delimiterIndex + 1));
+
+            // if age not between 1 and 20
+            if(petAge < 1 || petAge > 20) {
+              System.out.println("Invalid age");
+
+              continue;
+            }
   
             // add to pets ArrayList
             pets.add(new Pet(petName, petAge));
@@ -185,8 +212,17 @@ public class Main {
         System.out.println("\nSelect a pet ID from the above table:");
 
         try {
-          // try to parse pet ID from input
-          int id = Integer.parseInt(inputObj.nextLine());
+          int id = -1;
+          
+          // while id out of bounds
+          while(id < 0 || id > pets.size() - 1) {
+            // try to parse pet ID from input
+            id = Integer.parseInt(inputObj.nextLine());
+
+            if(id < 0 || id > pets.size() - 1) {
+              System.out.println("Invalid ID.");
+            }
+          }
 
           // prompt for and store new pet info
           System.out.println("Enter new pet info. \n\tFormat: <name> <age>");
@@ -237,10 +273,6 @@ public class Main {
         // catch for invalid ID or age
         catch(NumberFormatException exception) {
           System.out.println("Invalid ID or age");
-        }
-        // additional catch for invalid ID
-        catch(IndexOutOfBoundsException exception) {
-          System.out.println("Invalid ID");
         }
       }
       // else remove pet

@@ -32,3 +32,10 @@ Shows a table of all pets.
 2. On pet insertion, add pet to file.
 3. On pet deletion, remove pet from file. 
 4. On pet update, update pet in file. 
+
+# Stage 5
+
+## Handle Input Errors
+1. Perform ID validation.
+2. Require two inputs.
+3. Verify age bounds.
